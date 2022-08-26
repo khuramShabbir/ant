@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "130916166036",
+    "project_id": "antdemo-21107",
+    "storage_bucket": "antdemo-21107.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:130916166036:android:46ef7dee3a75f1d9a94781",
+        "android_client_info": {
+          "package_name": "com.example.ant"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "130916166036-e9hd7q0t97at70sps4evvnkqdrsl92oh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.ant",
+            "certificate_hash": "50eace039644fce6f686b33a684c722ed4a85e18"
+          }
+        },
+        {
+          "client_id": "130916166036-vnhv3odvdk5e6168baq2n10630vgas7r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBJXStpfujHQPd1E4oQhxK2QmvsHNTkHEE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "130916166036-vnhv3odvdk5e6168baq2n10630vgas7r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

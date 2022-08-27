@@ -18,4 +18,5 @@ class AppAssets {
   static String wallet = "assets/png/wallet.png";
   static String setting = "assets/png/settings.png";
   static String dollar = "assets/png/dollar.png";
+  static String otpVerification = "assets/png/otp_verification.png";
 }

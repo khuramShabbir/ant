@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class AppExtendedButtonFilled extends StatelessWidget {
   final String title;
-  final VoidCallback onTap;
+  final dynamic onTap;
   final Widget? leading;
   final Widget? trailing;
   final double padding;

@@ -1,9 +1,12 @@
 import 'package:demo/commons/app_colors.dart';
+import 'package:demo/controllers/AddDisplay/add_display_prov.dart';
 import 'package:demo/controllers/AppIntroProvider/app_intro_provider.dart';
 import 'package:demo/controllers/auth_provider/edit_profile_provider.dart';
 import 'package:demo/controllers/auth_provider/user_credential.dart';
 import 'package:demo/controllers/business_info/business_info.dart';
+import 'package:demo/restart_app.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'views/splash_view.dart';
 
@@ -26,12 +29,17 @@ class InitApp extends StatelessWidget {
         ChangeNotifierProvider(create: (BuildContext context) {
           return EditProfileProvider();
         }),
+        ChangeNotifierProvider(create: (BuildContext context) {
+          return AddDisplayProvider();
+        }),
       ],
-      child: MaterialApp(
-        home: const SplashScreen(),
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primaryColor: AppColors.primary,
+      child: RestartWidget(
+        child: GetMaterialApp(
+          home: const SplashScreen(),
+          debugShowCheckedModeBanner: false,
+          theme: ThemeData(
+            primaryColor: AppColors.primary,
+          ),
         ),
       ),
     );

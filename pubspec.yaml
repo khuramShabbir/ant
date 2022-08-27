@@ -32,9 +32,12 @@ dependencies:
 # View
   carousel_slider: ^4.1.1
   syncfusion_flutter_charts: ^20.2.40
-  custom_navigation_bar: ^0.8.2
-#     state management
+  image_picker: ^0.8.5+3
+  fluttertoast: ^8.0.9
+  otp_text_field: ^1.1.3
+  #     state management
   provider: ^6.0.3
+
 
 #  Fire Base
   firebase_auth: ^3.6.2
@@ -46,6 +49,9 @@ dependencies:
 
 #  Device Local Storage
   get_storage: ^2.0.3
+
+#  Get for utils
+  get: ^4.6.5
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

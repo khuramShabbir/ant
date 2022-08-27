@@ -1,12 +1,18 @@
+import 'dart:io';
+
 import 'package:demo/commons/app_assets.dart';
 import 'package:demo/commons/app_text_styles.dart';
 import 'package:demo/commons/constant.dart';
 import 'package:demo/commons/local_storage.dart';
 import 'package:demo/commons/widgets.dart';
 import 'package:demo/components/app_extended_button.dart';
+import 'package:demo/components/app_extended_button_rounded.dart';
 import 'package:demo/components/app_form_field.dart';
 import 'package:demo/controllers/auth_provider/edit_profile_provider.dart';
+import 'package:demo/controllers/auth_provider/user_credential.dart';
 import 'package:demo/models/auth_model/auth.dart';
+import 'package:demo/restart_app.dart';
+import 'package:demo/views/Auth_Views/sign_in_with_google_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -23,33 +29,39 @@ class _EditProfileViewState extends State<EditProfileView> {
   late TextEditingController nameCtrl;
   late TextEditingController emailCtrl;
   late TextEditingController phoneCtrl;
+  late TextEditingController otpPinCtrl;
+  late UserCredentialProvider userProv;
+
   @override
   void initState() {
+    userProv = Provider.of<UserCredentialProvider>(context, listen: false);
     nameCtrl = TextEditingController(text: user.userName);
     emailCtrl = TextEditingController(text: user.email);
-    phoneCtrl = TextEditingController(text: user.contactNumber);
+    // phoneCtrl = TextEditingController(text: user.contactNumber);
+    phoneCtrl = TextEditingController(text: "+923134905014");
+    otpPinCtrl = TextEditingController(text: "Enter Otp Code here");
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Consumer<EditProfileProvider>(
-      builder: (BuildContext context, value, Widget? child) {
+      builder: (BuildContext context, editProv, Widget? child) {
         return Scaffold(
           bottomNavigationBar: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             child: AppExtendedButtonFilled(
                 onTap: () async {
-                  bool status =
-                      await Provider.of<EditProfileProvider>(context, listen: false).updateProfile(
-                    name: nameCtrl.text,
-                    email: emailCtrl.text,
-                    contactNumber: phoneCtrl.text,
-                    profileUrl: "profileUrl",
-                  );
+                  await userProv.otpSend(phoneNumber: phoneCtrl.text, otpPin: "123456");
 
-                  logger.i(status);
-                  if (status) setState(() {});
+                  if (editProv.isPhoneVerified) {
+                    bool status = await editProv.updateProfile(
+                      name: nameCtrl.text,
+                      email: emailCtrl.text,
+                      contactNumber: phoneCtrl.text,
+                      profileUrl: "profileUrl",
+                    );
+                  }
                 },
                 title: "Submit"),
           ),
@@ -77,37 +89,47 @@ class _EditProfileViewState extends State<EditProfileView> {
                   AppWidgets.spacer(verticalSpace: 10),
 
                   /// Profile Picture
-                  Container(
-                    decoration: AppConst.boxDecoration20Radius,
-                    child: Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "Update profile picture",
-                            style: AppTextStyles.font15,
-                          ),
-                          AppWidgets.spacer(verticalSpace: 10),
-                          Row(
-                            children: [
-                              CircleAvatar(
-                                radius: 30,
-                                backgroundImage:
-                                    user.profileUrl != null ? NetworkImage(user.profileUrl!) : null,
-                              ),
-                              AppWidgets.spacer(horizontalSpace: 20),
-                              Image.asset(AppAssets.gallery),
-                              AppWidgets.spacer(horizontalSpace: 10),
-                              Text(
-                                "Upload Profile Picture",
-                                style: AppTextStyles.font15,
-                              ),
-                            ],
-                          ),
-                          AppWidgets.spacer(verticalSpace: 10),
-                          updateStatus(msg: "Profile picture updated successfully")
-                        ],
+                  InkWell(
+                    onTap: () async {
+                      await editProv.getImages();
+                    },
+                    child: Container(
+                      decoration: AppConst.boxDecoration20Radius,
+                      child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Update profile picture",
+                              style: AppTextStyles.font15,
+                            ),
+                            AppWidgets.spacer(verticalSpace: 10),
+                            Row(
+                              children: [
+                                editProv.xFile != null
+                                    ? CircleAvatar(
+                                        radius: 30,
+                                        backgroundImage: FileImage(File(editProv.xFile!.path)))
+                                    : CircleAvatar(
+                                        radius: 30,
+                                        backgroundImage: user.profileUrl != null
+                                            ? NetworkImage(user.profileUrl!)
+                                            : null,
+                                      ),
+                                AppWidgets.spacer(horizontalSpace: 20),
+                                Image.asset(AppAssets.gallery),
+                                AppWidgets.spacer(horizontalSpace: 10),
+                                Text(
+                                  "Upload Profile Picture",
+                                  style: AppTextStyles.font15,
+                                ),
+                              ],
+                            ),
+                            AppWidgets.spacer(verticalSpace: 10),
+                            updateStatus(msg: "Profile picture updated successfully")
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -185,9 +207,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                                 AppFormField(
                                   textEditingController: phoneCtrl,
                                 ),
-                                AppFormField(
-                                    textEditingController:
-                                        TextEditingController(text: "Enter Otp Code here")),
+                                AppFormField(textEditingController: otpPinCtrl),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
@@ -220,6 +240,29 @@ class _EditProfileViewState extends State<EditProfileView> {
                       ),
                     ),
                   ),
+                  AppWidgets.spacer(verticalSpace: 20),
+                  TextButton(
+                    onPressed: () {
+                      AppWidgets.infoSnackBar(msg: "Long Press For Account Delete");
+                    },
+                    child: const Text(
+                      "Delete Account",
+                      style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                    ),
+                    onLongPress: () async {
+                      await confirmation(context, onConfirm: () async {
+                        Navigator.pop(context);
+                        bool status =
+                            await Provider.of<UserCredentialProvider>(context, listen: false)
+                                .deleteAccount();
+                        if (status)
+                          Navigator.pushAndRemoveUntil(context,
+                              MaterialPageRoute(builder: (BuildContext context) {
+                            return SignInWithGoogleView();
+                          }), (route) => false);
+                      });
+                    },
+                  ),
                   AppWidgets.spacer(verticalSpace: 100),
                 ],
               ),
@@ -239,6 +282,53 @@ class _EditProfileViewState extends State<EditProfileView> {
       )
     ],
   );
+
+  Future<void> confirmation(BuildContext context, {required VoidCallback onConfirm}) async {
+    showDialog(
+      barrierDismissible: true,
+      context: context,
+      builder: (BuildContext context) {
+        return Padding(
+          padding: EdgeInsets.symmetric(
+              horizontal: 50, vertical: MediaQuery.of(context).size.height * .3),
+          child: Material(
+            elevation: 5,
+            borderRadius: BorderRadius.circular(10),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.white,
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    const Text(
+                      "Do you want delete account permanently?",
+                      style:
+                          TextStyle(color: Colors.red, fontWeight: FontWeight.bold, fontSize: 20),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        AppExtendedButtonRounded(onTap: onConfirm, title: "Delete"),
+                        AppExtendedButtonRounded(
+                            onTap: () {
+                              Navigator.pop(context);
+                            },
+                            title: "Cancel")
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   Widget updateStatus({required String msg}) {
     return Padding(

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class AppExtendedButtonRounded extends StatelessWidget {
   final String title;
-  final VoidCallback onTap;
+  final dynamic onTap;
   Color titleColor;
   final Widget? leading;
   final Widget? trailing;

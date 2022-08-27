@@ -8,6 +8,7 @@ import 'package:demo/components/app_extended_button_rounded.dart';
 import 'package:demo/components/choice_button.dart';
 import 'package:demo/components/earning_detail_card.dart';
 import 'package:demo/components/forecast_card.dart';
+import 'package:demo/views/AddDisplay/add_display.dart';
 import 'package:demo/views/DashBoardView/notification_view.dart';
 import 'package:flutter/material.dart';
 
@@ -16,6 +17,8 @@ class HomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    logger.i(LocalStorage.getUserCredential().id);
+
     return Scaffold(
       body: SingleChildScrollView(
         child: SizedBox(
@@ -110,7 +113,11 @@ class HomeView extends StatelessWidget {
                   style: AppTextStyles.font15Bold,
                 ),
                 AppWidgets.spacer(verticalSpace: 10),
-                AddDisplayButton(onTap: () {}),
+                AddDisplayButton(onTap: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
+                    return AddDisplay();
+                  }));
+                }),
                 TextButton(
                   onPressed: () {},
                   child: Text("Add a New Location", style: AppTextStyles.font15BoldPrimary),

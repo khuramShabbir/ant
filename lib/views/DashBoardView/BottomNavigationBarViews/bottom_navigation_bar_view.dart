@@ -1,8 +1,8 @@
+import 'package:demo/Models/AuthModel/auth_model.dart';
 import 'package:demo/commons/app_assets.dart';
 import 'package:demo/commons/app_colors.dart';
 import 'package:demo/commons/app_text_styles.dart';
 import 'package:demo/commons/local_storage.dart';
-import 'package:demo/models/auth_model/auth.dart';
 import 'package:demo/views/DashBoardView/home_view.dart';
 import 'package:demo/views/DashBoardView/notification_view.dart';
 import 'package:demo/views/DashBoardView/transfer_history.dart';

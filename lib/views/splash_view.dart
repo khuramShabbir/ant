@@ -6,7 +6,6 @@ import 'package:demo/commons/local_storage.dart';
 import 'package:demo/commons/widgets.dart';
 import 'package:demo/views/App_Into_Views/app_inro_view.dart';
 import 'package:demo/views/DashBoardView/BottomNavigationBarViews/bottom_navigation_bar_view.dart';
-import 'package:demo/views/DashBoardView/home_view.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -38,7 +37,7 @@ class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMix
         }));
       } else {
         Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
-          return BottomNavigationBarView();
+          return const BottomNavigationBarView();
         }));
       }
     });

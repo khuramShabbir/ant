@@ -24,13 +24,13 @@ class NotificationView extends StatelessWidget {
             AppWidgets.spacer(verticalSpace: 10),
             notifications,
             AppWidgets.spacer(verticalSpace: 10),
-            NotificationWidget(
+            const NotificationWidget(
               isStatus: true,
               title: "Samsung 65",
               subTitle: "Main 57 windows",
               detail: "This display is not connected with Wifi",
             ),
-            NotificationWidget(
+            const NotificationWidget(
               isStatus: false,
               title: "Monetization Offer",
               subTitle: "Bar Stewards Restaurant",
@@ -38,7 +38,7 @@ class NotificationView extends StatelessWidget {
               price: "\$100",
               priceDec: "Alcohol",
             ),
-            NotificationWidget(
+            const NotificationWidget(
               isStatus: false,
               title: "Monetization Offer",
               subTitle: "Bar Stewards Restaurant",

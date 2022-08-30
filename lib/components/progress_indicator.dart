@@ -10,6 +10,6 @@ class ShowCircularProgress extends StatefulWidget {
 class _ShowCircularProgressState extends State<ShowCircularProgress> {
   @override
   Widget build(BuildContext context) {
-    return Center();
+    return const Center();
   }
 }

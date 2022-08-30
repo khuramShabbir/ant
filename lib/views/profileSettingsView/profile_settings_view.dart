@@ -1,10 +1,10 @@
+import 'package:demo/Models/AuthModel/auth_model.dart';
 import 'package:demo/commons/app_text_styles.dart';
 import 'package:demo/commons/constant.dart';
 import 'package:demo/commons/local_storage.dart';
 import 'package:demo/commons/widgets.dart';
 import 'package:demo/components/app_extended_button.dart';
-import 'package:demo/controllers/auth_provider/user_credential.dart';
-import 'package:demo/models/auth_model/auth.dart';
+import 'package:demo/controllers/AuthProvider/user_credential_provider.dart';
 import 'package:demo/views/Auth_Views/sign_in_with_google_view.dart';
 import 'package:demo/views/profileSettingsView/eidt_profile.dart';
 import 'package:flutter/material.dart';
@@ -85,7 +85,7 @@ class ProfileSettingsView extends StatelessWidget {
                                 onPressed: () {
                                   Navigator.push(context,
                                       MaterialPageRoute(builder: (BuildContext context) {
-                                    return EditProfileView();
+                                    return const EditProfileView();
                                   }));
                                 },
                                 child: Text(
@@ -110,7 +110,7 @@ class ProfileSettingsView extends StatelessWidget {
                                   if (status) {
                                     Navigator.pushAndRemoveUntil(context,
                                         MaterialPageRoute(builder: (BuildContext context) {
-                                      return SignInWithGoogleView();
+                                      return const SignInWithGoogleView();
                                     }), (route) => false);
                                   }
                                 },

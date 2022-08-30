@@ -4,7 +4,7 @@ import 'package:demo/commons/widgets.dart';
 import 'package:demo/components/app_extended_button.dart';
 import 'package:demo/components/app_extended_button_rounded.dart';
 import 'package:demo/components/app_form_field.dart';
-import 'package:demo/controllers/business_info/business_info.dart';
+import 'package:demo/controllers/BusinessInfoProvider/business_info.dart';
 import 'package:demo/views/GreetingView/greeting_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -68,14 +68,11 @@ class _BusinessInfoViewState extends State<BusinessInfoView> {
                       ],
                     ),
                     AppFormField(
-                        hintLabel: "Name",
-                        textEditingController: busInfoCtrl.nameTextCtrl),
+                        hintLabel: "Name", textEditingController: busInfoCtrl.nameTextCtrl),
                     AppFormField(
-                        hintLabel: "Category",
-                        textEditingController: busInfoCtrl.categoryTextCtrl),
+                        hintLabel: "Category", textEditingController: busInfoCtrl.categoryTextCtrl),
                     AppFormField(
-                        hintLabel: "Address",
-                        textEditingController: busInfoCtrl.addressTextCtrl),
+                        hintLabel: "Address", textEditingController: busInfoCtrl.addressTextCtrl),
                     AppFormField(
                         hintLabel: "LOCATION details",
                         textEditingController: busInfoCtrl.locationTextCtrl),
@@ -91,8 +88,8 @@ class _BusinessInfoViewState extends State<BusinessInfoView> {
                         Expanded(
                             child: AppExtendedButtonFilled(
                           onTap: () {
-                            Navigator.push(context, MaterialPageRoute(
-                                builder: (BuildContext context) {
+                            Navigator.push(context,
+                                MaterialPageRoute(builder: (BuildContext context) {
                               return const GreetingView();
                             }));
                           },
@@ -113,7 +110,6 @@ class _BusinessInfoViewState extends State<BusinessInfoView> {
   final Widget blueBar = Container(
     width: 5,
     height: 30,
-    decoration: BoxDecoration(
-        color: Colors.blue, borderRadius: BorderRadius.circular(100)),
+    decoration: BoxDecoration(color: Colors.blue, borderRadius: BorderRadius.circular(100)),
   );
 }

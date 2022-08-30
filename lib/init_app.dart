@@ -1,9 +1,9 @@
 import 'package:demo/commons/app_colors.dart';
-import 'package:demo/controllers/AddDisplay/add_display_prov.dart';
+import 'package:demo/controllers/AddDisplayProvider/add_display_prov.dart';
 import 'package:demo/controllers/AppIntroProvider/app_intro_provider.dart';
-import 'package:demo/controllers/auth_provider/edit_profile_provider.dart';
-import 'package:demo/controllers/auth_provider/user_credential.dart';
-import 'package:demo/controllers/business_info/business_info.dart';
+import 'package:demo/controllers/AuthProvider/edit_profile_provider.dart';
+import 'package:demo/controllers/AuthProvider/user_credential_provider.dart';
+import 'package:demo/controllers/BusinessInfoProvider/business_info.dart';
 import 'package:demo/restart_app.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

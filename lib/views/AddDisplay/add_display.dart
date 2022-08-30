@@ -7,9 +7,8 @@ import 'package:demo/commons/local_storage.dart';
 import 'package:demo/commons/widgets.dart';
 import 'package:demo/components/app_extended_button.dart';
 import 'package:demo/components/app_form_field.dart';
-import 'package:demo/components/multi_selection_chip.dart';
 import 'package:demo/components/single_selection_chip.dart';
-import 'package:demo/controllers/AddDisplay/add_display_prov.dart';
+import 'package:demo/controllers/AddDisplayProvider/add_display_prov.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 

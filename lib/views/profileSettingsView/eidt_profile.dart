@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:demo/Models/AuthModel/auth_model.dart';
 import 'package:demo/commons/app_assets.dart';
 import 'package:demo/commons/app_text_styles.dart';
 import 'package:demo/commons/constant.dart';
@@ -8,10 +9,9 @@ import 'package:demo/commons/widgets.dart';
 import 'package:demo/components/app_extended_button.dart';
 import 'package:demo/components/app_extended_button_rounded.dart';
 import 'package:demo/components/app_form_field.dart';
-import 'package:demo/controllers/auth_provider/edit_profile_provider.dart';
-import 'package:demo/controllers/auth_provider/user_credential.dart';
-import 'package:demo/models/auth_model/auth.dart';
-import 'package:demo/restart_app.dart';
+import 'package:demo/controllers/AuthProvider/edit_profile_provider.dart';
+import 'package:demo/controllers/AuthProvider/user_credential_provider.dart';
+
 import 'package:demo/views/Auth_Views/sign_in_with_google_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -55,7 +55,7 @@ class _EditProfileViewState extends State<EditProfileView> {
                   await userProv.otpSend(phoneNumber: phoneCtrl.text, otpPin: "123456");
 
                   if (editProv.isPhoneVerified) {
-                    bool status = await editProv.updateProfile(
+                    await editProv.updateProfile(
                       name: nameCtrl.text,
                       email: emailCtrl.text,
                       contactNumber: phoneCtrl.text,
@@ -255,11 +255,12 @@ class _EditProfileViewState extends State<EditProfileView> {
                         bool status =
                             await Provider.of<UserCredentialProvider>(context, listen: false)
                                 .deleteAccount();
-                        if (status)
+                        if (status) {
                           Navigator.pushAndRemoveUntil(context,
                               MaterialPageRoute(builder: (BuildContext context) {
-                            return SignInWithGoogleView();
+                            return const SignInWithGoogleView();
                           }), (route) => false);
+                        }
                       });
                     },
                   ),

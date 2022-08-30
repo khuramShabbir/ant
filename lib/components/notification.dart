@@ -12,7 +12,7 @@ class NotificationWidget extends StatelessWidget {
 
   final String? priceDec;
 
-  NotificationWidget({
+  const NotificationWidget({
     this.isStatus = false,
     required this.title,
     required this.subTitle,
@@ -39,11 +39,9 @@ class NotificationWidget extends StatelessWidget {
                   const Expanded(child: SizedBox()),
                   if (isStatus)
                     const Text("DISCONNECTED",
-                        style: TextStyle(
-                            color: Colors.red, fontWeight: FontWeight.bold)),
+                        style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
                   AppWidgets.spacer(horizontalSpace: 5),
-                  if (isStatus)
-                    const CircleAvatar(radius: 5, backgroundColor: Colors.red)
+                  if (isStatus) const CircleAvatar(radius: 5, backgroundColor: Colors.red)
                 ],
               ),
               AppWidgets.spacer(verticalSpace: 10),
@@ -70,10 +68,8 @@ class NotificationWidget extends StatelessWidget {
                   if (isStatus)
                     const Text(
                       " reconnect",
-                      style: TextStyle(
-                          color: Colors.blue,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 12),
+                      style:
+                          TextStyle(color: Colors.blue, fontWeight: FontWeight.bold, fontSize: 12),
                     ),
                 ],
               ),

@@ -48,9 +48,8 @@ class GreetingView extends StatelessWidget {
               ),
               AppExtendedButtonFilled(
                   onTap: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (BuildContext context) {
-                      return BottomNavigationBarView();
+                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
+                      return const BottomNavigationBarView();
                     }));
                   },
                   title: "Continue")

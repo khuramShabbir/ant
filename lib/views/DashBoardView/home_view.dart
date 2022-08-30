@@ -1,6 +1,5 @@
 import 'package:demo/commons/app_text_styles.dart';
 import 'package:demo/commons/constant.dart';
-import 'package:demo/commons/local_storage.dart';
 import 'package:demo/commons/widgets.dart';
 import 'package:demo/components/add_display_button.dart';
 import 'package:demo/components/app_extended_button.dart';
@@ -9,7 +8,6 @@ import 'package:demo/components/choice_button.dart';
 import 'package:demo/components/earning_detail_card.dart';
 import 'package:demo/components/forecast_card.dart';
 import 'package:demo/views/AddDisplay/add_display.dart';
-import 'package:demo/views/DashBoardView/notification_view.dart';
 import 'package:flutter/material.dart';
 
 class HomeView extends StatelessWidget {

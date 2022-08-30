@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:demo/models/auth_model/auth.dart';
+import 'package:demo/Models/AuthModel/auth_model.dart';
 import 'package:get_storage/get_storage.dart';
 
 class LocalStorage {

@@ -4,7 +4,7 @@ import 'package:demo/controllers/AppIntroProvider/app_intro_provider.dart';
 import 'package:demo/controllers/AuthProvider/edit_profile_provider.dart';
 import 'package:demo/controllers/AuthProvider/user_credential_provider.dart';
 import 'package:demo/controllers/BusinessInfoProvider/business_info.dart';
-import 'package:demo/restart_app.dart';
+import 'package:demo/controllers/google_map_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
@@ -17,35 +17,24 @@ class InitApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (BuildContext context) {
-          return UserCredentialProvider();
-        }),
-        ChangeNotifierProvider(create: (BuildContext context) {
-          return BusinessInfoProvider();
-        }),
-        ChangeNotifierProvider(create: (BuildContext context) {
-          return AppIntroProvider();
-        }),
-        ChangeNotifierProvider(create: (BuildContext context) {
-          return EditProfileProvider();
-        }),
-        ChangeNotifierProvider(create: (BuildContext context) {
-          return AddDisplayProvider();
-        }),
+        ChangeNotifierProvider.value(value: UserCredentialProvider()),
+        ChangeNotifierProvider.value(value: BusinessInfoProvider()),
+        ChangeNotifierProvider.value(value: AppIntroProvider()),
+        ChangeNotifierProvider.value(value: EditProfileProvider()),
+        ChangeNotifierProvider.value(value: AddDisplayProvider()),
+        ChangeNotifierProvider.value(value: GoogleMapProvider()),
       ],
-      child: RestartWidget(
-        child: GetMaterialApp(
-          home: const SplashScreen(),
-          debugShowCheckedModeBanner: false,
-          theme: ThemeData(
-            colorScheme: ColorScheme.fromSwatch(),
-            appBarTheme: AppBarTheme(
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              centerTitle: true,
-              titleTextStyle:
-                  TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 18),
-            ),
+      child: GetMaterialApp(
+        home: const SplashScreen(),
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSwatch(),
+          appBarTheme: AppBarTheme(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            centerTitle: true,
+            titleTextStyle:
+                TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 18),
           ),
         ),
       ),

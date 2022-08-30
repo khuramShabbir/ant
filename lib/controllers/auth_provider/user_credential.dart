@@ -46,6 +46,60 @@ class UserCredentialProvider extends ChangeNotifier {
     return false;
   }
 
+  Future<bool> signIn() async {
+    Map<String, dynamic> body = {"googleId": LocalStorage.getUserCredential().googleId};
+
+    String response = await ApiServices.simplePostWithBody(feedUrl: ApiUrls.SIGN_IN, body: body);
+    if (response.isEmpty) return false;
+    auth.UserAuthModel userAuthModel = auth.userAuthModelFromJson(response);
+    await LocalStorage.box.write(LocalStorage.userData, userAuthModel.user);
+    await LocalStorage.box.write(LocalStorage.token, userAuthModel.user.token);
+
+    logger.wtf(LocalStorage.box.read(LocalStorage.token));
+
+    notifyListeners();
+
+    return true;
+  }
+
+  Future<bool> getUser(Map<String, dynamic> body) async {
+    if (body.isEmpty) return false;
+    String response = await ApiServices.simplePostWithBody(feedUrl: ApiUrls.SIGN_UP, body: body);
+
+    if (response.isEmpty) return false;
+
+    auth.UserAuthModel userAuthModel = auth.userAuthModelFromJson(response);
+
+    await LocalStorage.box.write(LocalStorage.userData, userAuthModel.user);
+    // await LocalStorage.box.write(LocalStorage.token, userAuthModel.token);
+    notifyListeners();
+
+    return await signIn();
+  }
+
+  Future<bool> logOut() async {
+    await FirebaseAuth.instance.signOut();
+    await LocalStorage.box.remove(LocalStorage.userData);
+    await LocalStorage.box.remove(LocalStorage.token);
+    notifyListeners();
+
+    if (!LocalStorage.box.hasData(LocalStorage.userData)) return true;
+
+    return false;
+  }
+
+  Future<bool> deleteAccount() async {
+    String response = await ApiServices.simpleDelete(
+        feedUrl: ApiUrls.DELETE_ACCOUNT, googleId: LocalStorage.getUserCredential().googleId);
+    if (response.isEmpty) return false;
+    logger.i(response);
+    AppWidgets.successfullySnackBar(msg: "Account Deleted");
+
+    await logOut();
+
+    return true;
+  }
+
   Future<void> otpSend({
     required phoneNumber,
     required String otpPin,
@@ -83,46 +137,5 @@ class UserCredentialProvider extends ChangeNotifier {
     } else {
       AppWidgets.successfullySnackBar(msg: "Phone Number Verified");
     }
-  }
-
-  Future<bool> getUser(Map<String, dynamic> body) async {
-    if (body.isEmpty) return false;
-    String response = await ApiServices.simplePostWithBody(feedUrl: ApiUrls.SIGN_UP, body: body);
-
-    if (response.isEmpty) return false;
-
-    auth.UserAuthModel userAuthModel = auth.userAuthModelFromJson(response);
-
-    await LocalStorage.box.write(LocalStorage.userData, userAuthModel.user);
-    await LocalStorage.box.write(LocalStorage.token, userAuthModel.token);
-
-    return true;
-  }
-
-  Future<bool> logOut() async {
-    await FirebaseAuth.instance.signOut();
-    LocalStorage.box.erase();
-
-    if (!LocalStorage.box.hasData(LocalStorage.userData)) return true;
-
-    return false;
-  }
-
-  Future<bool> deleteAccount() async {
-    AppWidgets.showProgress();
-    //   Map<String, dynamic> body = {
-    //     "googleId": LocalStorage.getUserCredential().googleId,
-    //   }
-    // };  "user": {
-    //       "email": LocalStorage.getUserCredential().email,
-
-    String response = await ApiServices.simpleDelete(
-        feedUrl: ApiUrls.DELETE_ACCOUNT, googleId: LocalStorage.getUserCredential().googleId);
-    AppWidgets.stopProgress();
-    if (response.isEmpty) return false;
-    logger.i(response);
-    logOut();
-
-    return true;
   }
 }

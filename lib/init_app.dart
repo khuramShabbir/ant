@@ -38,7 +38,14 @@ class InitApp extends StatelessWidget {
           home: const SplashScreen(),
           debugShowCheckedModeBanner: false,
           theme: ThemeData(
-            primaryColor: AppColors.primary,
+            colorScheme: ColorScheme.fromSwatch(),
+            appBarTheme: AppBarTheme(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              centerTitle: true,
+              titleTextStyle:
+                  TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 18),
+            ),
           ),
         ),
       ),

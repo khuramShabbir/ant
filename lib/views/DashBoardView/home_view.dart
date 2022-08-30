@@ -17,8 +17,6 @@ class HomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    logger.i(LocalStorage.getUserCredential().id);
-
     return Scaffold(
       body: SingleChildScrollView(
         child: SizedBox(

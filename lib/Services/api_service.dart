@@ -6,17 +6,23 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class ApiServices {
+  static Map<String, String> headers = {'Content-Type': 'application/json'};
+
+  static Map<String, String> headersWithToken = {
+    'Authorization': LocalStorage.getToken(),
+    'Content-Type': 'application/json'
+  };
+
   static Future<String> simplePostWithBody({
     required String feedUrl,
     required Map<String, dynamic> body,
+    bool headerWithToken = false,
   }) async {
     AppWidgets.showProgress();
 
-    Map<String, String> headers = {'Content-Type': 'application/json'};
-
     var request = http.Request('POST', Uri.parse(ApiUrls.BASE_URL + feedUrl));
 
-    request.headers.addAll(headers);
+    request.headers.addAll(headerWithToken ? headersWithToken : headers);
     request.body = json.encode(body);
 
     http.StreamedResponse response = await request.send();
@@ -62,10 +68,8 @@ class ApiServices {
     }
   }
 
-  static Future<String> simpleDelete(
-      {required String feedUrl,
-      // required Map<String, dynamic> body,
-      required String googleId}) async {
+  static Future<String> simpleDelete({required String feedUrl, required String googleId}) async {
+    AppWidgets.showProgress();
     Map<String, String> headers = {
       'Authorization': LocalStorage.getToken(),
       'Content-Type': 'application/json'
@@ -73,7 +77,6 @@ class ApiServices {
     var request = http.Request('DELETE', Uri.parse(ApiUrls.BASE_URL + feedUrl + googleId));
 
     request.headers.addAll(headers);
-    // request.body = json.encode(body);
 
     http.StreamedResponse response = await request.send();
 
@@ -86,7 +89,5 @@ class ApiServices {
     } else {
       return "";
     }
-
-    return "";
   }
 }

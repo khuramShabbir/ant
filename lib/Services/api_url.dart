@@ -6,4 +6,5 @@ class ApiUrls {
   static String EDIT_PROFILE = "user/editProfile";
   static String DELETE_ACCOUNT = "user/deleteAccount/";
   static String ADD_DISPLAY = "Ads/newAd";
+  static String SIGN_IN = "user/signIn";
 }

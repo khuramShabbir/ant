@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:demo/commons/constant.dart';
 import 'package:demo/models/auth_model/auth.dart';
 import 'package:get_storage/get_storage.dart';
 

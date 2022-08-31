@@ -8,10 +8,14 @@ class AppFormField extends StatefulWidget {
   final bool outlinedBorderd;
   final int maxLines;
   final FormFieldValidator<String>? validator;
+  final GestureTapCallback? onTap;
+  final bool enabled;
   const AppFormField({
     Key? key,
     this.validator,
     this.outlinedBorderd = false,
+    this.onTap,
+    this.enabled = true,
     this.maxLines = 1,
     this.padding = 5.0,
     required this.textEditingController,
@@ -28,10 +32,12 @@ class _AppFormFieldState extends State<AppFormField> {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: widget.padding),
       child: TextFormField(
+        onTap: widget.onTap,
         validator: widget.validator,
         maxLines: widget.maxLines,
         controller: widget.textEditingController,
         decoration: InputDecoration(
+          enabled: widget.enabled,
           labelStyle: TextStyle(color: AppColors.primary),
           labelText: widget.hintLabel,
           enabledBorder: widget.outlinedBorderd

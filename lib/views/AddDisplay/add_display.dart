@@ -1,14 +1,13 @@
 import 'dart:io';
-
 import 'package:demo/commons/app_colors.dart';
 import 'package:demo/commons/app_text_styles.dart';
 import 'package:demo/commons/constant.dart';
-import 'package:demo/commons/local_storage.dart';
 import 'package:demo/commons/widgets.dart';
 import 'package:demo/components/app_extended_button.dart';
 import 'package:demo/components/app_form_field.dart';
 import 'package:demo/components/single_selection_chip.dart';
 import 'package:demo/controllers/AddDisplayProvider/add_display_prov.dart';
+import 'package:demo/views/GoogleMap/google_map_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -19,8 +18,6 @@ class AddDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    logger.i(LocalStorage.getToken());
-
     return Consumer<AddDisplayProvider>(
       builder: (BuildContext context, value, Widget? child) {
         return Scaffold(
@@ -94,11 +91,22 @@ class AddDisplay extends StatelessWidget {
                     ),
                     titleText("Business Location"),
                     AppFormField(
+                      onTap: () async {
+                        value.businessLocationCtrl.text = await Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (BuildContext co) {
+                              return const GoogleMapView();
+                            },
+                          ),
+                        );
+                      },
                       validator: (v) {
                         if (v!.isEmpty) return "field required";
                         return null;
                       },
-                      hintLabel: "Business Location",
+                      enabled: true,
+                      hintLabel: "Add Business Location",
                       outlinedBorderd: true,
                       textEditingController: value.businessLocationCtrl,
                     ),

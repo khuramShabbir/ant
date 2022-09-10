@@ -7,7 +7,7 @@ import 'package:demo/components/app_extended_button_rounded.dart';
 import 'package:demo/components/choice_button.dart';
 import 'package:demo/components/earning_detail_card.dart';
 import 'package:demo/components/forecast_card.dart';
-import 'package:demo/views/AddDisplay/add_display.dart';
+import 'package:demo/views/AddDisplay/display_location_and_strategy.dart';
 import 'package:flutter/material.dart';
 
 class HomeView extends StatelessWidget {
@@ -111,7 +111,9 @@ class HomeView extends StatelessWidget {
                 AppWidgets.spacer(verticalSpace: 10),
                 AddDisplayButton(onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) {
-                    return AddDisplay();
+                    return LocationAndStrategy();
+
+                    // AddDisplay();
                   }));
                 }),
                 TextButton(

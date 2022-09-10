@@ -90,4 +90,33 @@ class ApiServices {
       return "";
     }
   }
+
+  static Future<String> putFormData(
+      {Map<String, String>? fields, String? files, required feedUrl}) async {
+    AppWidgets.showProgress();
+
+    var request = http.MultipartRequest('PUT', Uri.parse(ApiUrls.BASE_URL + feedUrl));
+
+    if (files != null) {
+      request.files.add(await http.MultipartFile.fromPath('file', files));
+    }
+
+    if (fields != null) {
+      request.fields.addAll(fields);
+    }
+
+    request.headers.addAll(headersWithToken);
+
+    http.StreamedResponse response = await request.send();
+    String body = await response.stream.bytesToString();
+
+    logger.e(body);
+    logger.e(response.statusCode);
+    AppWidgets.stopProgress();
+    if (response.statusCode == 200) {
+      return body;
+    } else {
+      return "";
+    }
+  }
 }

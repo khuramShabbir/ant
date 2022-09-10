@@ -2,8 +2,10 @@ import 'package:demo/Services/api_service.dart';
 import 'package:demo/Services/api_url.dart';
 import 'package:demo/commons/local_storage.dart';
 import 'package:demo/commons/widgets.dart';
+import 'package:demo/controllers/google_map_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 
 class AddDisplayProvider extends ChangeNotifier {
   XFile? xFile;
@@ -16,7 +18,7 @@ class AddDisplayProvider extends ChangeNotifier {
   TextEditingController businessCategoryCtrl = TextEditingController();
   TextEditingController specificationCtrl = TextEditingController();
 
-  Future<bool> addDisplay() async {
+  Future<bool> addDisplay(BuildContext context) async {
     Map<String, dynamic> body = {
       "businessName": businessNameCtrl.text,
       "businessLocation": businessLocationCtrl.text,
@@ -25,7 +27,6 @@ class AddDisplayProvider extends ChangeNotifier {
       "displayType": displayType,
       "displayImage": xFile!.path,
       "displayStatus": displayStatus,
-      // "status": status,
       "specifications": specificationCtrl.text,
       "userId": LocalStorage.getUserCredential().id
     };
@@ -33,8 +34,40 @@ class AddDisplayProvider extends ChangeNotifier {
     String response = await ApiServices.simplePostWithBody(
         feedUrl: ApiUrls.ADD_DISPLAY, body: body, headerWithToken: true);
     if (response.isEmpty) return false;
+    bool status = await addDisplayLocation(context);
+    if (status) {
+      AppWidgets.successfullySnackBar(msg: "Display Added");
+    }
+    businessNameCtrl.clear();
+    businessLocationCtrl.clear();
+    businessCategoryCtrl.clear();
+    specificationCtrl.clear();
 
-    AppWidgets.successfullySnackBar(msg: "Display Added");
+    return true;
+  }
+
+  Future<bool> addDisplayLocation(BuildContext context) async {
+    GoogleMapProvider googleMapProvider = Provider.of<GoogleMapProvider>(context, listen: false);
+
+    Map<String, dynamic> body = {
+      "lat": googleMapProvider.latLng?.latitude,
+      "lng": googleMapProvider.latLng?.latitude,
+      "address": googleMapProvider.locationName,
+      "isShown": true,
+      "userId": LocalStorage.getUserCredential().id
+    };
+
+    if (googleMapProvider.latLng == null) {
+      AppWidgets.unsuccessfullySnackBar(msg: "Location Can`t be null");
+
+      return false;
+    }
+
+    String response = await ApiServices.simplePostWithBody(
+        feedUrl: ApiUrls.ADD_DISPLAY, body: body, headerWithToken: true);
+    if (response.isEmpty) return false;
+
+    AppWidgets.successfullySnackBar(msg: "Display Location Added");
     businessNameCtrl.clear();
     businessLocationCtrl.clear();
     businessCategoryCtrl.clear();
@@ -58,7 +91,7 @@ class AddDisplayProvider extends ChangeNotifier {
     }
   }
 
-  bool formValidations() {
+  bool formValidations(BuildContext context) {
     if (xFile == null) {
       AppWidgets.infoSnackBar(msg: 'Please add image');
       return false;
@@ -75,6 +108,13 @@ class AddDisplayProvider extends ChangeNotifier {
       AppWidgets.infoSnackBar(msg: 'Please Select Display Status');
       return false;
     }
+
+    if (Provider.of<GoogleMapProvider>(context, listen: false).latLng == null) {
+      AppWidgets.infoSnackBar(msg: 'Please Add Location From Google Map');
+
+      return false;
+    }
+
     // if (status.isEmpty) {
     //   AppWidgets.infoSnackBar(msg: 'Please Select Status');
     //   return false;

@@ -1,4 +1,4 @@
-import 'package:demo/Models/AuthModel/auth_model.dart'as auth;
+import 'package:demo/Models/AuthModel/auth_model.dart' as auth;
 import 'package:demo/Services/api_service.dart';
 import 'package:demo/Services/api_url.dart';
 import 'package:demo/commons/constant.dart';
@@ -9,9 +9,11 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class UserCredentialProvider extends ChangeNotifier {
+  bool isLoaded = false;
   UserCredential? userCredential;
   String verificationId = '';
   String otpCode = "";
+  auth.UserAuthModel? userAuthModel;
 
   FirebaseAuth fireAuth = FirebaseAuth.instance;
 
@@ -48,15 +50,13 @@ class UserCredentialProvider extends ChangeNotifier {
 
   Future<bool> signIn() async {
     Map<String, dynamic> body = {"googleId": LocalStorage.getUserCredential().googleId};
-
+    // isLoaded = false;
     String response = await ApiServices.simplePostWithBody(feedUrl: ApiUrls.SIGN_IN, body: body);
     if (response.isEmpty) return false;
-    auth.UserAuthModel userAuthModel = auth.userAuthModelFromJson(response);
-    await LocalStorage.box.write(LocalStorage.userData, userAuthModel.user);
-    await LocalStorage.box.write(LocalStorage.token, userAuthModel.user.token);
-
-    logger.wtf(LocalStorage.box.read(LocalStorage.token));
-
+    userAuthModel = auth.userAuthModelFromJson(response);
+    await LocalStorage.box.write(LocalStorage.userData, userAuthModel!.user);
+    await LocalStorage.box.write(LocalStorage.token, userAuthModel!.user.token);
+    isLoaded = true;
     notifyListeners();
 
     return true;
@@ -100,9 +100,10 @@ class UserCredentialProvider extends ChangeNotifier {
     return true;
   }
 
+  bool isPhoneVerified = false;
+
   Future<void> otpSend({
     required phoneNumber,
-    required String otpPin,
   }) async {
     await fireAuth.verifyPhoneNumber(
         timeout: const Duration(seconds: 60),
@@ -119,9 +120,10 @@ class UserCredentialProvider extends ChangeNotifier {
           AppWidgets.infoSnackBar(msg: "Code Sent");
 
           this.verificationId = verificationId;
-          await verifyPhone(verificationId: verificationId, otpCode: otpPin);
+          notifyListeners();
         },
         codeAutoRetrievalTimeout: (String verificationId) async {});
+    notifyListeners();
   }
 
   Future<void> verifyPhone({
@@ -135,7 +137,10 @@ class UserCredentialProvider extends ChangeNotifier {
 
     if (credential.verificationId!.isEmpty) {
     } else {
+      isPhoneVerified = true;
+      notifyListeners();
       AppWidgets.successfullySnackBar(msg: "Phone Number Verified");
     }
+    notifyListeners();
   }
 }

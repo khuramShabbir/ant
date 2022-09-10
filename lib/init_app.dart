@@ -1,5 +1,6 @@
 import 'package:demo/commons/app_colors.dart';
 import 'package:demo/controllers/AddDisplayProvider/add_display_prov.dart';
+import 'package:demo/controllers/AddDisplayProvider/strategy_prov.dart';
 import 'package:demo/controllers/AppIntroProvider/app_intro_provider.dart';
 import 'package:demo/controllers/AuthProvider/edit_profile_provider.dart';
 import 'package:demo/controllers/AuthProvider/user_credential_provider.dart';
@@ -23,6 +24,7 @@ class InitApp extends StatelessWidget {
         ChangeNotifierProvider.value(value: EditProfileProvider()),
         ChangeNotifierProvider.value(value: AddDisplayProvider()),
         ChangeNotifierProvider.value(value: GoogleMapProvider()),
+        ChangeNotifierProvider.value(value: StrategyProvider()),
       ],
       child: GetMaterialApp(
         home: const SplashScreen(),

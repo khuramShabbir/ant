@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:demo/commons/app_colors.dart';
 import 'package:demo/commons/app_text_styles.dart';
-import 'package:demo/commons/constant.dart';
 import 'package:demo/commons/widgets.dart';
 import 'package:demo/components/app_extended_button.dart';
 import 'package:demo/components/app_form_field.dart';
@@ -34,8 +33,8 @@ class AddDisplay extends StatelessWidget {
             child: AppExtendedButtonFilled(
               onTap: () async {
                 if (formKey.currentState!.validate()) {
-                  bool status = value.formValidations();
-                  if (status) value.addDisplay();
+                  bool status = value.formValidations(context);
+                  if (status) value.addDisplay(context);
                 }
               },
               title: "Add",

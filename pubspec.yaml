@@ -39,16 +39,18 @@ dependencies:
 #  google_map
   google_maps_flutter: ^2.1.12
 #  google_maps_place_picker: ^1.0.1
-  flutter_google_places_hoc081098:
-  flutter_google_places:
-  google_api_headers:
-  google_maps_webservice:
+  place_picker: ^0.9.19
+
+#  flutter_google_places_hoc081098:
+#  flutter_google_places:
+#  google_api_headers:
+#  google_maps_webservice:
 
   geolocator: ^9.0.1
   permission_handler: ^10.0.0
 
   #     state management
-  provider: ^6.0.3
+  provider: ^6.0.0
 
 
 #  Fire Base

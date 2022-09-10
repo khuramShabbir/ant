@@ -35,11 +35,10 @@ class _EditProfileViewState extends State<EditProfileView> {
   @override
   void initState() {
     userProv = Provider.of<UserCredentialProvider>(context, listen: false);
-    nameCtrl = TextEditingController(text: user.userName);
-    emailCtrl = TextEditingController(text: user.email);
-    // phoneCtrl = TextEditingController(text: user.contactNumber);
-    phoneCtrl = TextEditingController(text: "+923134905014");
-    otpPinCtrl = TextEditingController(text: "Enter Otp Code here");
+    nameCtrl = TextEditingController(text: userProv.userAuthModel!.user.userName);
+    emailCtrl = TextEditingController(text: userProv.userAuthModel!.user.email);
+    phoneCtrl = TextEditingController(text: userProv.userAuthModel!.user.contactNumber);
+    otpPinCtrl = TextEditingController();
     super.initState();
   }
 
@@ -47,228 +46,241 @@ class _EditProfileViewState extends State<EditProfileView> {
   Widget build(BuildContext context) {
     return Consumer<EditProfileProvider>(
       builder: (BuildContext context, editProv, Widget? child) {
-        return Scaffold(
-          bottomNavigationBar: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-            child: AppExtendedButtonFilled(
-                onTap: () async {
-                  await userProv.otpSend(phoneNumber: phoneCtrl.text, otpPin: "123456");
-
-                  if (editProv.isPhoneVerified) {
-                    await editProv.updateProfile(
-                      name: nameCtrl.text,
-                      email: emailCtrl.text,
-                      contactNumber: phoneCtrl.text,
-                      profileUrl: "profileUrl",
-                    );
-                  }
-                },
-                title: "Submit"),
-          ),
-          appBar: AppBar(
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            leading: IconButton(
-              icon: const Icon(
-                Icons.arrow_back,
-                color: Colors.black,
-              ),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-          ),
-          body: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  AppWidgets.spacer(verticalSpace: 10),
-                  editProfile,
-                  AppWidgets.spacer(verticalSpace: 10),
-
-                  /// Profile Picture
-                  InkWell(
+        return Consumer<UserCredentialProvider>(
+          builder: (BuildContext context, value, Widget? child) {
+            return Scaffold(
+              bottomNavigationBar: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                child: AppExtendedButtonFilled(
                     onTap: () async {
-                      await editProv.getImages();
+                      if (value.verificationId.isEmpty) {
+                        await value.otpSend(phoneNumber: phoneCtrl.text);
+                      } else if (value.verificationId.isNotEmpty && !value.isPhoneVerified) {
+                        await value.verifyPhone(
+                            verificationId: value.verificationId, otpCode: otpPinCtrl.text);
+                      } else if (value.isPhoneVerified) {
+                        await editProv.updateProfile(
+                          name: nameCtrl.text,
+                          email: emailCtrl.text,
+                          contactNumber: phoneCtrl.text,
+                        );
+                      }
                     },
-                    child: Container(
-                      decoration: AppConst.boxDecoration20Radius,
-                      child: Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "Update profile picture",
-                              style: AppTextStyles.font15,
-                            ),
-                            AppWidgets.spacer(verticalSpace: 10),
-                            Row(
+                    title: "Submit"),
+              ),
+              appBar: AppBar(
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                leading: IconButton(
+                  icon: const Icon(
+                    Icons.arrow_back,
+                    color: Colors.black,
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                ),
+              ),
+              body: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      AppWidgets.spacer(verticalSpace: 10),
+                      editProfile,
+                      AppWidgets.spacer(verticalSpace: 10),
+
+                      /// Profile Picture
+                      InkWell(
+                        onTap: () async {
+                          await editProv.getImages();
+                        },
+                        child: Container(
+                          decoration: AppConst.boxDecoration20Radius,
+                          child: Padding(
+                            padding: const EdgeInsets.all(10),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                editProv.xFile != null
-                                    ? CircleAvatar(
-                                        radius: 30,
-                                        backgroundImage: FileImage(File(editProv.xFile!.path)))
-                                    : CircleAvatar(
-                                        radius: 30,
-                                        backgroundImage: user.profileUrl != null
-                                            ? NetworkImage(user.profileUrl!)
-                                            : null,
-                                      ),
-                                AppWidgets.spacer(horizontalSpace: 20),
-                                Image.asset(AppAssets.gallery),
-                                AppWidgets.spacer(horizontalSpace: 10),
                                 Text(
-                                  "Upload Profile Picture",
+                                  "Update profile picture",
                                   style: AppTextStyles.font15,
                                 ),
-                              ],
-                            ),
-                            AppWidgets.spacer(verticalSpace: 10),
-                            updateStatus(msg: "Profile picture updated successfully")
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  AppWidgets.spacer(verticalSpace: 10),
-
-                  /// Name
-                  Container(
-                    decoration: AppConst.boxDecoration20Radius,
-                    child: Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(),
-                          Text(
-                            "Name",
-                            style: AppTextStyles.font15.copyWith(fontWeight: FontWeight.w400),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 30, right: 30, bottom: 10),
-                            child: AppFormField(textEditingController: nameCtrl),
-                          ),
-                          updateStatus(msg: "Username updated successfully")
-                        ],
-                      ),
-                    ),
-                  ),
-                  AppWidgets.spacer(verticalSpace: 10),
-
-                  /// Email
-                  Container(
-                    decoration: AppConst.boxDecoration20Radius,
-                    child: Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(),
-                          Text(
-                            "Email",
-                            style: AppTextStyles.font15.copyWith(fontWeight: FontWeight.w400),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              left: 30,
-                              right: 30,
-                            ),
-                            child: AppFormField(
-                              textEditingController: emailCtrl,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  AppWidgets.spacer(verticalSpace: 10),
-
-                  /// Update Phone
-                  Container(
-                    decoration: AppConst.boxDecoration20Radius,
-                    child: Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(),
-                          Text(
-                            "Update Phone ",
-                            style: AppTextStyles.font15.copyWith(fontWeight: FontWeight.w400),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 30),
-                            child: Column(
-                              children: [
-                                AppFormField(
-                                  textEditingController: phoneCtrl,
-                                ),
-                                AppFormField(textEditingController: otpPinCtrl),
+                                AppWidgets.spacer(verticalSpace: 10),
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
+                                    editProv.xFile != null
+                                        ? CircleAvatar(
+                                            radius: 30,
+                                            backgroundImage: FileImage(File(editProv.xFile!.path)))
+                                        : CircleAvatar(
+                                            radius: 30,
+                                            backgroundImage:
+                                                userProv.userAuthModel!.user.profileUrl != null
+                                                    ? NetworkImage(
+                                                        userProv.userAuthModel!.user.profileUrl!)
+                                                    : null,
+                                          ),
+                                    AppWidgets.spacer(horizontalSpace: 20),
+                                    Image.asset(AppAssets.gallery),
+                                    AppWidgets.spacer(horizontalSpace: 10),
                                     Text(
-                                      "Wait 59s to re send",
+                                      "Upload Profile Picture",
                                       style: AppTextStyles.font15,
                                     ),
-                                    Text(
-                                      "Resend",
-                                      style: AppTextStyles.font15WithGrey,
-                                    ),
                                   ],
-                                )
+                                ),
+                                AppWidgets.spacer(verticalSpace: 10),
+                                updateStatus(msg: "Profile picture updated successfully")
                               ],
                             ),
                           ),
-                          AppWidgets.spacer(verticalSpace: 10),
-                          const Align(
-                            alignment: Alignment.bottomRight,
-                            child: CircleAvatar(
-                              backgroundColor: Colors.black,
-                              radius: 15,
-                              child: Icon(
-                                Icons.check,
-                                color: Colors.white,
-                              ),
-                            ),
-                          )
-                        ],
+                        ),
                       ),
-                    ),
+                      AppWidgets.spacer(verticalSpace: 10),
+
+                      /// Name
+                      Container(
+                        decoration: AppConst.boxDecoration20Radius,
+                        child: Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(),
+                              Text(
+                                "Name",
+                                style: AppTextStyles.font15.copyWith(fontWeight: FontWeight.w400),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 30, right: 30, bottom: 10),
+                                child: AppFormField(textEditingController: nameCtrl),
+                              ),
+                              updateStatus(msg: "Username updated successfully")
+                            ],
+                          ),
+                        ),
+                      ),
+                      AppWidgets.spacer(verticalSpace: 10),
+
+                      /// Email
+                      Container(
+                        decoration: AppConst.boxDecoration20Radius,
+                        child: Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(),
+                              Text(
+                                "Email",
+                                style: AppTextStyles.font15.copyWith(fontWeight: FontWeight.w400),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                  left: 30,
+                                  right: 30,
+                                ),
+                                child: AppFormField(
+                                  textEditingController: emailCtrl,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      AppWidgets.spacer(verticalSpace: 10),
+
+                      /// Update Phone
+                      Container(
+                        decoration: AppConst.boxDecoration20Radius,
+                        child: Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(),
+                              Text(
+                                "Update Phone ",
+                                style: AppTextStyles.font15.copyWith(fontWeight: FontWeight.w400),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 30),
+                                child: Column(
+                                  children: [
+                                    AppFormField(
+                                      textEditingController: phoneCtrl,
+                                    ),
+                                    AppFormField(
+                                        textEditingController: otpPinCtrl,
+                                        hintLabel: "Enter Otp here"),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          "Wait 59s to re send",
+                                          style: AppTextStyles.font15,
+                                        ),
+                                        Text(
+                                          "Resend",
+                                          style: AppTextStyles.font15WithGrey,
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ),
+                              AppWidgets.spacer(verticalSpace: 10),
+                              const Align(
+                                alignment: Alignment.bottomRight,
+                                child: CircleAvatar(
+                                  backgroundColor: Colors.black,
+                                  radius: 15,
+                                  child: Icon(
+                                    Icons.check,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                      AppWidgets.spacer(verticalSpace: 20),
+                      TextButton(
+                        onPressed: () {
+                          AppWidgets.infoSnackBar(msg: "Long Press For Account Delete");
+                        },
+                        child: const Text(
+                          "Delete Account",
+                          style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                        ),
+                        onLongPress: () async {
+                          await confirmation(context, onConfirm: () async {
+                            Navigator.pop(context);
+                            bool status =
+                                await Provider.of<UserCredentialProvider>(context, listen: false)
+                                    .deleteAccount();
+                            if (status) {
+                              Navigator.pushAndRemoveUntil(context,
+                                  MaterialPageRoute(builder: (BuildContext context) {
+                                return const SignInWithGoogleView();
+                              }), (route) => false);
+                            }
+                          });
+                        },
+                      ),
+                      AppWidgets.spacer(verticalSpace: 20),
+                      const Text("Please login again After edit profile",
+                          style: TextStyle(color: Colors.red)),
+                      AppWidgets.spacer(verticalSpace: 100),
+                    ],
                   ),
-                  AppWidgets.spacer(verticalSpace: 20),
-                  TextButton(
-                    onPressed: () {
-                      AppWidgets.infoSnackBar(msg: "Long Press For Account Delete");
-                    },
-                    child: const Text(
-                      "Delete Account",
-                      style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-                    ),
-                    onLongPress: () async {
-                      await confirmation(context, onConfirm: () async {
-                        Navigator.pop(context);
-                        bool status =
-                            await Provider.of<UserCredentialProvider>(context, listen: false)
-                                .deleteAccount();
-                        if (status) {
-                          Navigator.pushAndRemoveUntil(context,
-                              MaterialPageRoute(builder: (BuildContext context) {
-                            return const SignInWithGoogleView();
-                          }), (route) => false);
-                        }
-                      });
-                    },
-                  ),
-                  AppWidgets.spacer(verticalSpace: 100),
-                ],
+                ),
               ),
-            ),
-          ),
+            );
+          },
         );
       },
     );
